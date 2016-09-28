@@ -2,8 +2,8 @@ from setuptools import setup
 from os import path
 from io import open
 
-with open(path.join(here, 'README.MD'), encoding='utf-8') as f:
-	long_description = f.read()
+#with open(path.join(here, 'README.MD'), encoding='utf-8') as f:
+#	long_description = f.read()
 
 setup(
  	name = 'genieacs',
@@ -11,7 +11,7 @@ setup(
 	version = '0.1',
 
 	description = 'A Python API to interact with the [GenieACS](https://github.com/zaidka/genieacs) [REST API](https://github.com/zaidka/genieacs/wiki/API-Reference), but with the easiness and comfort of Python.',
-	long_description = long_descritpion,
+#	long_description = long_descritpion,
 
 	url = 'https://github.com/SebScheibenzuber/python-genieacs',
 	download_url = 'https://github.com/SebScheibenzuber/python-genieacs/tarball/0.1' ,
