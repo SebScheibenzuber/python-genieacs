@@ -14,7 +14,7 @@ setup(
 	long_description = long_descritpion,
 
 	url = 'https://github.com/SebScheibenzuber/python-genieacs',
-	download_url = 'https://github.com/SebScheibenzuber/archive/v0.1.tar.gz' ,
+	download_url = 'https://github.com/SebScheibenzuber/python-genieacs/tarball/0.1' ,
 
 	author = 'Oliver Kraitschy',
 	author_email = 'okraitschy@tdt.de',
