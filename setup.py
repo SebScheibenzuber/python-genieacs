@@ -37,7 +37,7 @@ setup(
 
     package_data = {
         'data': ['README.txt', 'example.py', 'LICENSE.txt']
-    }
+    },
 
 	install_requires = ['requests'],
 
