@@ -1,1 +1,3 @@
-include LICENSE.txt
+include *.md
+include *.py
+include *.txt

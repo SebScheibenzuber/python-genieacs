@@ -10,7 +10,7 @@ setup(
 
 	version = '0.1',
 
-	description = 'A Python API to interact with the [GenieACS](https://github.com/zaidka/genieacs) [REST API](https://github.com/zaidka/genieacs/wiki/API-Reference), but with the easiness and comfort of Python.',
+	description = 'A Python API to interact with the GenieACS REST API, but with the easiness and comfort of Python.',
 #	long_description = long_descritpion,
 
 	url = 'https://github.com/SebScheibenzuber/python-genieacs',
