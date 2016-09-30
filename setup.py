@@ -8,7 +8,7 @@ from io import open
 setup(
  	name = 'genieacs',
 
-	version = '0.1.4',
+	version = '0.1.5',
 
 	description = 'A Python API to interact with the GenieACS REST API, but with the easiness and comfort of Python.',
 #	long_description = long_descritpion,
@@ -36,7 +36,7 @@ setup(
 	packages = ['genieacs'],
 
     package_data = {
-        'data': ['README.txt', 'example.py', 'LICENSE.txt']
+        'genieacs': ['data/example.py', 'data/LICENSE.txt', 'data/README.md']
     },
 
 	install_requires = ['requests'],
