@@ -2,19 +2,19 @@ from setuptools import setup
 from os import path
 from io import open
 
-#with open(path.join(here, 'README.MD'), encoding='utf-8') as f:
-#	long_description = f.read()
+readme_path = path.join(path.abspath(path.dirname(__file__)), 'README.txt')
+long_description = open(readme_path, encoding='utf-8').read()
 
 setup(
  	name = 'genieacs',
 
-	version = '0.1.6',
+	version = '0.1.7',
 
 	description = 'A Python API to interact with the GenieACS REST API, but with the easiness and comfort of Python.',
-#	long_description = long_descritpion,
+	long_description = long_description,
 
 	url = 'https://github.com/SebScheibenzuber/python-genieacs',
-	download_url = 'https://github.com/SebScheibenzuber/python-genieacs/tarball/0.1' ,
+	download_url = 'https://github.com/SebScheibenzuber/python-genieacs/tarball/0.1',
 
 	author = 'Oliver Kraitschy',
 	author_email = 'okraitschy@tdt.de',
@@ -33,7 +33,7 @@ setup(
 		'Topic :: Software Development :: Libraries :: Python Modules',
     ],
 
-	#keywords = ''
+	keywords = 'genieacs API REST'
 
 	packages = ['genieacs'],
 

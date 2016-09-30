@@ -163,7 +163,7 @@ class Connection(object):
             print("task_download:\nHTTPError: device_id might be incorrect\n")
 
     def task_retry(self, task_id):
-        "Retry a faulty task at the next inform"
+        """Retry a faulty task at the next inform"""
         try:
             r = self.session.post(self.base_url + "/tasks/" + task_id + "/retry")
             r.raise_for_status()
