@@ -8,7 +8,7 @@ from io import open
 setup(
  	name = 'genieacs',
 
-	version = '0.1.5',
+	version = '0.1.6',
 
 	description = 'A Python API to interact with the GenieACS REST API, but with the easiness and comfort of Python.',
 #	long_description = long_descritpion,
@@ -25,6 +25,8 @@ setup(
 		'Development Status :: 4 - Beta',
 		'Intended Audience :: Developers',
     	'Programming Language :: Python',
+        'Programming Language :: Python :: 2'
+        'Programming Language :: Python :: 3'
     	'License :: OSI Approved :: GNU General Public License v2 (GPLv2)',
 		'Natural Language :: English',
     	'Operating System :: OS Independent',
