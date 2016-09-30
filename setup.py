@@ -33,7 +33,7 @@ setup(
 		'Topic :: Software Development :: Libraries :: Python Modules',
     ],
 
-	keywords = 'genieacs API REST'
+	keywords = 'genieacs API REST',
 
 	packages = ['genieacs'],
 
