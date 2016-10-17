@@ -3,7 +3,6 @@
 #
 # Usage examples for python-genieacs
 import genieacs
-import time
 # set a device_id for the following methods
 device_id = "000149-c1500-000149014AF8"
 
