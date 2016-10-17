@@ -122,7 +122,7 @@ class SoftwareVersion(Configuration):
 
 class Preset(object):
 
-    def __init__(self, name, weight, preconditions, configurations = ""):
+    def __init__(self, name, weight, preconditions, configurations):
         self.name = name
         self.weight = weight
         self.preconditions = preconditions
