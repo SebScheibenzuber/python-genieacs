@@ -8,7 +8,7 @@ long_description = open(readme_path, encoding='utf-8').read()
 setup(
  	name = 'genieacs',
 
-	version = '0.1.7',
+	version = '0.2',
 
 	description = 'A Python API to interact with the GenieACS REST API, but with the easiness and comfort of Python.',
 	long_description = long_description,

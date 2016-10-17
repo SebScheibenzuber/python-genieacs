@@ -76,6 +76,6 @@ The following list contains all possible interactions with the GenieACS REST API
 
 #### Manage files:
 
-* list all files
+* (list all files)
 * (upload or overwrite a file)
 * (delete an uploaded file)

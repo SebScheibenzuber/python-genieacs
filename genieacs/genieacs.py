@@ -7,6 +7,139 @@
 import requests
 import json
 
+class InvalidOperatorError(Exception):
+    """Raised when an invalid operator has been entered"""
+    def __init__ (self, operator):
+        self.operator = operator
+        self.msg = ("InvalidOperatorError: Precondition has an invalid operator. Given: \"" + self.operator + "\" Expected: e, ne, lt, gt, lte, gte")
+
+class Parameter(object):
+
+    def __init__(self, name, value, key = False):
+        self.name = name
+        self.value = value
+        self.key = key
+
+    def name(self):
+        return self.name
+
+    def value(self):
+        return self.value
+
+    def key(self):
+        return self.key
+
+class Object(object):
+
+    def __init__(self, name, parameters):
+        self.name = name
+        self.parameters = parameters
+
+    def name(self):
+        return self.name
+
+    def parameters(self):
+        return self.parameters
+
+class Precondition(object):
+
+    def __init__(self, name, operator, value):
+        self.name = name
+        self.operator = operator
+        self.value = value
+
+    def name(self):
+        return self.name
+
+    def operator(self):
+        return self.operator
+
+    def value (self):
+        return self.value
+
+class Configuration(object):
+    pass
+
+class AddObject(Configuration):
+
+    def __init__(self, name, object):
+        self.type = "add_object"
+        self.name = name
+        self.object = object
+
+class AddTag(Configuration):
+
+    def __init__(self, tag):
+        self.type = "add_tag"
+        self.tag = tag
+
+class Command(Configuration):
+
+    def __init__(self, command, value):
+        self.type = "custom_command_value"
+        self.command = command
+        self.value = value
+
+class Execute(Configuration):
+
+    def __init__(self, command, age):
+        self.type = "custom_command_age"
+        self.command = command
+        self.age = age
+
+class Refresh(Configuration):
+
+    def __init__(self, name, age):
+        self.type = "age"
+        self.name = name
+        self.age = age
+
+class RemoveObject(Configuration):
+
+    def __init__(self, name, object):
+        self.type = "delete_object"
+        self.name = name
+        self.object = object
+
+class RemoveTag(Configuration):
+
+    def __init__(self, tag):
+        self.type = "delete_tag"
+        self.tag = tag
+
+class Set(Configuration):
+
+    def __init__(self, name, value):
+        self.type = "value"
+        self.name = name
+        self.value = value
+
+class SoftwareVersion(Configuration):
+
+    def __init__(self, software_version):
+        self.type = "software_version"
+        self.software_version = software_version
+
+class Preset(object):
+
+    def __init__(self, name, weight, preconditions, configurations = ""):
+        self.name = name
+        self.weight = weight
+        self.preconditions = preconditions
+        self.configurations = configurations
+
+    def name(self):
+        return self.name
+
+    def weight(self):
+        return self.weight
+
+    def precondition(self):
+        return self.precondition
+
+    def configurations(self):
+        return self.configurations
+
 class Connection(object):
     """Connection object to interact with the GenieACS server."""
     def __init__(self, ip, port=7557, ssl=False, verify=False, auth=False, user="", passwd="", url=""):
@@ -212,12 +345,79 @@ class Connection(object):
         finally:
             return data
 
-    def preset_create(self, preset_name, data):
+    def preset_create(self, preset):
         """Create a new preset or update a preset with a given name"""
         try:
-            self.__request_put("/presets/" + preset_name, data)
+            data = str({"weight" : preset.weight, "precondition" : "{}", "configurations" : []})
+            data = data.replace("\'", "\"")
+            for precondition in preset.preconditions:
+                if "{}" in data:
+                    if precondition.operator in ("", "e"):
+                        precons = ("{\"%(n)s\":\"%(v)s\"}" % {"n" : precondition.name,"v" : precondition.value})
+                        precons = json.dumps(precons)
+                        data = data.replace("\"{}\"", "%s" % precons)
+                    elif precondition.operator in ("ne", "lt", "gt", "lte", "gte"):
+                        precons = "{\"%(n)s\":{\"$%(o)s\":\"%(v)s\"}}" % {"n" : precondition.name,"o" : precondition.operator,"v" : precondition.value}
+                        precons = json.dumps(precons)
+                        data = data.replace("\"{}\"", "%s" % precons)
+                    else:
+                        raise InvalidOperatorError(precondition.operator)
+                elif ", \\\"" not in data:
+                    if precondition.operator in ("", "e"):
+                        precons = (", \"%(n)s\":\"%(v)s\"}" % {"n" : precondition.name,"v" : precondition.value})
+                        precons = json.dumps(precons)
+                        precons = precons.replace("\",", ",")
+                        if "\"}\", \"weight\"" in data:
+                            data = data.replace("}\", \"weight\"", "%s, \"weight\"" % precons)
+                        elif "}}\", \"weight\"" in data:
+                            precons = ("}" + precons)
+                            data = data.replace("}}\", \"weight\"", "%s, \"weight\"" % precons)
+                    elif precondition.operator in ("ne", "lt", "gt", "lte", "gte"):
+                        precons = ", \"%(n)s\":{\"$%(o)s\":\"%(v)s\"}}" % {"n" : precondition.name,"o" : precondition.operator,"v" : precondition.value}
+                        precons = json.dumps(precons)
+                        precons = precons.replace("\",", ",")
+                        if "\"}\", \"weight\"" in data:
+                            data = data.replace("}\", \"weight\"", "%s, \"weight\"" % precons)
+                        elif "\"}}\", \"weight\"" in data:
+                            precons = ("}" + precons)
+                            data = data.replace("}}\", \"weight\"", "%s, \"weight\"" % precons)
+                    else:
+                        raise InvalidOperatorError(precondition.operator)
+                else:
+                    if precondition.operator in ("", "e"):
+                        precons = (", \"%(n)s\":\"%(v)s\"}" % {"n" : precondition.name,"v" : precondition.value})
+                        precons = json.dumps(precons)
+                        precons = precons.replace("\",", ",")
+                        if "\"}\", \"weight\"" in data:
+                            data = data.replace("}\", \"weight\"", "%s, \"weight\"" % precons)
+                        elif "\"}}\", \"weight\"" in data:
+                            precons = ("}" + precons)
+                            data = data.replace("}}\", \"weight\"", "%s, \"weight\"" % precons)
+                    elif precondition.operator in ("ne", "lt", "gt", "lte", "gte"):
+                        precons = ", \"%(n)s\":{\"$%(o)s\":\"%(v)s\"}}" % {"n" : precondition.name,"o" : precondition.operator,"v" : precondition.value}
+                        precons = json.dumps(precons)
+                        precons = precons.replace("\",", ",")
+                        if "\"}\", \"weight\"" in data:
+                            data = data.replace("}\", \"weight\"", "%s, \"weight\"" % precons)
+                        elif "\"}}\", \"weight\"" in data:
+                            precons = ("}" + precons)
+                            data = data.replace("}}\", \"weight\"", "%s, \"weight\"" % precons)
+                    else:
+                        raise InvalidOperatorError(precondition.operator)
+            for configuration in preset.configurations:
+                if "}]" in data:
+                    config = str(vars(configuration))
+                    config = config.replace("\'", "\"")
+                    data = data.replace("}]", "}, %s]" % config)
+                if "[]" in data:
+                    config = str(vars(configuration))
+                    config = config.replace("\'", "\"")
+                    data = data.replace("[]", "[%s]" % config)
+            self.__request_put("/presets/" + preset.name, data)
         except requests.exceptions.HTTPError:
             print("preset_create:\nHTTPError: given parameters might be incorrect\n")
+        except InvalidOperatorError as err:
+            print("preset_create:\n" + err.msg)
 
     def preset_create_all_from_file(self, filename):
         """Create all presets contained in a json file"""
@@ -258,12 +458,20 @@ class Connection(object):
         finally:
             return data
 
-    def object_create(self, object_name, data):
+    def object_create(self, object):
         """Create a new object or update an object with a given name"""
         try:
-            self.__request_put("/objects/" + object_name, data)
+            data = str({parameter.name: parameter.value for parameter in object.parameters})
+            data = data.replace("\'", "\"")
+            for param in object.parameters:
+                if param.key == True:
+                    if "keys" not in data:
+                        data = data.replace("}", ", \"_keys\":[\"%s\"]}" % param.name)
+                    else:
+                        data = data.replace("]}", ", \"%s\"]}" % param.name)
+            self.__request_put("/objects/" + object.name, data)
         except requests.exceptions.HTTPError:
-            print("object_create:\nA HTTPError accured, given parameters might be incorrect\n")
+                print("object_create:\nA HTTPError accured, given parameters might be incorrect\n")
 
     def object_create_all_from_file(self, filename):
         """Create all objects contained in a json file"""
