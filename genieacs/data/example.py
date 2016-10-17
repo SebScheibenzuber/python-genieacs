@@ -75,16 +75,16 @@ for gobject in object_data:
 acs.object_create_all_from_file('objects.json')
 
 # assign a tag to a device
-#acs.tag_assign(device_id, "tagged")
+acs.tag_assign(device_id, "tagged")
 # remove a tag from a device
-#acs.tag_remove(device_id, "tagged")
+acs.tag_remove(device_id, "tagged")
 
 # print all existing files in the database
-#print(acs.file_get_all())
+print(acs.file_get_all())
 # upload a new or modified file
-#acs.file_upload("Firmware.img", "1 Firmware Upgrade Image", "123456", "r4500", "2.0")
+acs.file_upload("Firmware.img", "1 Firmware Upgrade Image", "123456", "r4500", "2.0")
 # delete a file from the database
-#acs.file_delete("Firmware.img")
+acs.file_delete("Firmware.img")
 
 # delete the device from the database
 acs.device_delete(device_id)
