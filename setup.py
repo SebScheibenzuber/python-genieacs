@@ -38,7 +38,7 @@ setup(
 	packages = ['genieacs'],
 
     package_data = {
-        'genieacs': ['data/example.py', 'data/LICENSE.txt', 'data/README.md']
+        'genieacs': ['data/example.py]
     },
 
 	install_requires = ['requests'],
