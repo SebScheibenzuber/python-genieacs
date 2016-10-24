@@ -4,9 +4,8 @@
 # Usage examples for python-genieacs
 
 import genieacs
-
 # set a device_id for the following methods
-device_id = "000149-c1500-000149014AF8"
+device_id = "000149-Kananga-P13"
 
 # Create a Connection object to interact with a GenieACS server
 acs = genieacs.Connection("tr069.tdt.de", ssl=True, auth=True, user="tdt", passwd="tdt")
@@ -28,11 +27,18 @@ acs.task_download(device_id, "9823de165bb983f24f782951", "Firmware.img")
 # retry a faulty task
 acs.task_retry("9h4769svl789kjf984ll")
 
-
 # print all tasks of a given device
 print(acs.task_get_all(device_id))
-# print IDs of all devices
-print(acs.device_get_all_IDs())
+# print data of one device
+print("\n")
+print(acs.device_get_parameter_from(device_id, "_tags"))
+print("\n")
+print(acs.device_get_parameter_from(device_id, "summary.serialNumber"))
+print("\n")
+print(acs.device_get_parameter_from(device_id, "summary.softwareVersion"))
+print("\n")
+print(acs.device_get_parameter_from(device_id, "summary.mac"))
+print("\n")
 # search a device by its ID and print all corresponding data
 print(acs.device_get_by_id(device_id))
 # search a device by its MAC address and print all corresponding data
@@ -75,4 +81,4 @@ acs.file_upload("Firmware.img", "1 Firmware Upgrade Image", "123456", "r4500", "
 acs.file_delete("Firmware.img")
 
 # delete the device from the database
-acs.device_delete(device_id)
+acs.device_delete("01234-Kananga-P84")

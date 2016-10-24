@@ -64,16 +64,6 @@ class Connection(object):
 
     ##### methods for devices #####
 
-    def device_get_all_IDs(self):
-        """Get IDs of all devices"""
-        r = self.session.get(self.base_url + "/devices/" + "?projection=_id")
-        r.raise_for_status()
-        jsondata = r.json()
-        data = []
-        for device in jsondata:
-            data.append(device["_id"])
-        return data
-
     def device_get_by_id(self, device_id):
         """Get all data of a device identified by its ID"""
         quoted_id = requests.utils.quote("{\"_id\":\"" + device_id + "\"}", safe = '')
@@ -88,6 +78,34 @@ class Connection(object):
         r = self.session.get(self.base_url + "/devices/" + "?query=" + quoted_MAC)
         r.raise_for_status()
         data = r.json()
+        return data
+
+    def device_get_parameter_from_all(self, param):
+        """Get a parameter from all devices"""
+        r = self.session.get(self.base_url + "/devices/" + "?projection=" + param)
+        r.raise_for_status()
+        jsondata = r.json()
+        data = []
+        for device in jsondata:
+            data.append(device[param])
+        return data
+
+    def device_get_parameter_from(self, device_id, param):
+        """Get a parameter from a given device"""
+        print(param + " von " + device_id + " ist:")
+        quoted_id = requests.utils.quote("{\"_id\":\"" + device_id + "\"}", safe = '')
+        r = self.session.get(self.base_url + "/devices" + "?query=" + quoted_id + "&projection=" + param)
+        r.raise_for_status()
+        jsondata = r.json()
+        data = []
+        for device in jsondata:
+            data.append(device[param])
+        value = {"summary.mac", "summary.ip", "summary.softwareVersion"}
+        if param in value:
+            datavalue = []
+            for value in data:
+                datavalue.append(value["_value"])
+            return datavalue
         return data
 
     def device_get_parameters(self, device_id, parameter_names):
