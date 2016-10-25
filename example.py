@@ -26,25 +26,27 @@ acs.task_add_object(device_id, "VPNObject", [["InternetGatewayDevice.X_TDT-DE_Op
 acs.task_download(device_id, "9823de165bb983f24f782951", "Firmware.img")
 # retry a faulty task
 acs.task_retry("9h4769svl789kjf984ll")
-
 # print all tasks of a given device
 print(acs.task_get_all(device_id))
-# print data of one device
+# print data of devices
 print("\n")
-print(acs.device_get_parameter_from(device_id, "_tags"))
+print(acs.device_get_parameter())
 print("\n")
-print(acs.device_get_parameter_from(device_id, "summary.serialNumber"))
+print(acs.device_get_parameter(device_id))
 print("\n")
-print(acs.device_get_parameter_from(device_id, "summary.softwareVersion"))
+print(acs.device_get_parameter(device_id, "_tags"))
 print("\n")
-print(acs.device_get_parameter_from(device_id, "summary.mac"))
+print(acs.device_get_parameter(device_id, "summary.mac"))
 print("\n")
+print(acs.device_get_parameter(parameter = "_id"))
+print("\n")
+print(acs.device_get_parameter(parameter = "summary.ip"))
+print("\n")
+
 # search a device by its ID and print all corresponding data
 print(acs.device_get_by_id(device_id))
 # search a device by its MAC address and print all corresponding data
 print(acs.device_get_by_MAC("00:01:49:ff:0f:01"))
-# print 2 given parameters of a given device
-print(acs.device_get_parameters(device_id, "InternetGatewayDevice.DeviceInfo.SoftwareVersion,InternetGatewayDevice.X_TDT-DE_Interface.2.ProtoStatic.Ipv4.Address"))
 # delete a task
 acs.task_delete("9h4769svl789kjf984ll")
 
