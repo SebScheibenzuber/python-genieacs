@@ -80,41 +80,59 @@ class Connection(object):
         data = r.json()
         return data
 
-    def device_get_parameter_from_all(self, param):
-        """Get a parameter from all devices"""
-        r = self.session.get(self.base_url + "/devices/" + "?projection=" + param)
-        r.raise_for_status()
-        jsondata = r.json()
-        data = []
-        for device in jsondata:
-            data.append(device[param])
-        return data
-
-    def device_get_parameter_from(self, device_id, param):
-        """Get a parameter from a given device"""
-        print(param + " von " + device_id + " ist:")
-        quoted_id = requests.utils.quote("{\"_id\":\"" + device_id + "\"}", safe = '')
-        r = self.session.get(self.base_url + "/devices" + "?query=" + quoted_id + "&projection=" + param)
-        r.raise_for_status()
-        jsondata = r.json()
-        data = []
-        for device in jsondata:
-            data.append(device[param])
-        value = {"summary.mac", "summary.ip", "summary.softwareVersion"}
-        if param in value:
+    def device_get_parameter(self, device_id = "", parameter = ""):
+        """Get parameters from devices"""
+        if device_id == "" and parameter == "":
+            print("All parameters from all devices:")
+            r = self.session.get(self.base_url + "/devices/")
+            r.raise_for_status()
+            data = r.json()
+            return data
+        elif device_id == "":
+            print(parameter + " from all devices:")
+            r = self.session.get(self.base_url + "/devices/" + "?projection=" + parameter)
+            r.raise_for_status()
+            jsondata = r.json()
+            data = []
             datavalue = []
-            for value in data:
-                datavalue.append(value["_value"])
-            return datavalue
-        return data
-
-    def device_get_parameters(self, device_id, parameter_names):
-        """Get a defined list of parameters from a given device"""
-        quoted_id = requests.utils.quote("{\"_id\":\"" + device_id + "\"}", safe = '')
-        r = self.session.get(self.base_url + "/devices" + "?query=" + quoted_id + "&projection=" + parameter_names)
-        r.raise_for_status()
-        data = r.json()
-        return data
+            i = 0
+            for device in jsondata:
+                i += 1
+                data.append(device[parameter])
+                value = {"summary.mac", "summary.ip", "summary.softwareVersion"}
+                if parameter in value:
+                    for value in data:
+                        datavalue.append(value["_value"])
+            if not datavalue:
+                return data
+            else:
+                datavalue = datavalue[-i:]
+                return datavalue
+        elif parameter == "":
+            print("All parameters from " + device_id + ":")
+            quoted_id = requests.utils.quote("{\"_id\":\"" + device_id + "\"}", safe = '')
+            r = self.session.get(self.base_url + "/devices" + "?query=" + quoted_id)
+            r.raise_for_status()
+            data = r.json()
+            return data
+        else:
+            print(parameter + " from " + device_id + ":")
+            quoted_id = requests.utils.quote("{\"_id\":\"" + device_id + "\"}", safe = '')
+            r = self.session.get(self.base_url + "/devices" + "?query=" + quoted_id + "&projection=" + parameter)
+            r.raise_for_status()
+            jsondata = r.json()
+            data = []
+            datavalue = []
+            for device in jsondata:
+                data.append(device[parameter])
+                value = {"summary.mac", "summary.ip", "summary.softwareVersion"}
+                if parameter in value:
+                    for value in data:
+                        datavalue.append(value["_value"])
+            if not datavalue:
+                return data
+            else:
+                return datavalue
 
     def device_delete(self, device_id):
         """Delete a given device from the database"""
