@@ -90,20 +90,38 @@ class Connection(object):
 
         print(jsondata)
 
-        parameters = parameter.split(",")
+        parameters = parameter.split(", ")
 
         data = []
 
         datadict = {}
 
-
+        values = []
+        IDs = []
 
         for param in parameters:
             parampath = param.split(".")
-            for device in jsondata:
-                for path in parampath:
-                    ip = [0]["InternetGatewayDevice"]["X_TDT-DE_OpenwrtManagementServer"]["ConnectionRequestIp"]["_value"]
-                    data.append(device[ip])
+            path = None
+            itemnr = 0
+            print(len(parampath))
+            for item in parampath:
+                itemnr += 1
+                if path == None:
+                    path = jsondata[0][item]
+                else:
+		            if itemnr < len(parampath):
+			            path = path[item]
+		            else:
+		                values.append(path[item]["_value"])
+
+        for param in parameters:
+            IDs.append(jsondata[0]["_id"])
+
+
+        #ID = jsondata[0][parampath[0]][parampath[1]][parampath[2]]["_id"]
+        print(IDs)
+        print(values)
+
 
 
         print(data)
