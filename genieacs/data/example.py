@@ -38,9 +38,9 @@ print(acs.device_get_parameters(device_id, "InternetGatewayDevice.DeviceInfo.Sof
 acs.task_delete("9h4769svl789kjf984ll")
 
 # create preconditions for a new preset
-preconditionOne = genieacs.Precondition("summary.productClass", "", "NewProduct")
-preconditionTwo = genieacs.Precondition("summary.softwareVersion", "gte", "1.3.2")
-preconditionThree = genieacs.Precondition("_tag", "ne", "tagged")
+preconditionOne = genieacs.Precondition("summary.productClass", "=", "NewProduct")
+preconditionTwo = genieacs.Precondition("summary.softwareVersion", ">=", "1.3.2")
+preconditionThree = genieacs.Precondition("_tag", "!=", "tagged")
 preconditions = [preconditionOne, preconditionTwo, preconditionThree]
 # create configurations for a new preset
 configurationOne = genieacs.AddTag("tagged")
