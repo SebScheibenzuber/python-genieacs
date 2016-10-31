@@ -29,9 +29,8 @@ acs.task_retry("9h4769svl789kjf984ll")
 # print all tasks of a given device
 print(acs.task_get_all(device_id))
 # print data of devices
-print("\n")
-device_ids = []
-print(acs.device_get_parameters(device_ids, "InternetGatewayDevice.X_TDT-DE_OpenwrtManagementServer.ConnectionRequestIp, InternetGatewayDevice.X_TDT-DE_OpenwrtManagementServer.ConnectionRequestInterface"))
+device_ids = [device_id, "000149-Kananga-P15"]
+print(acs.device_get_parameters("InternetGatewayDevice.X_TDT-DE_OpenwrtManagementServer.ConnectionRequestIp, InternetGatewayDevice.X_TDT-DE_OpenwrtManagementServer.ConnectionRequestInterface", device_ids))
 
 # search a device by its ID and print all corresponding data
 print(acs.device_get_by_id(device_id))

@@ -81,7 +81,7 @@ class Connection(object):
         data = r.json()
         return data
 
-    def device_get_parameters(self,  device_ids, parameter):
+    def device_get_parameters(self, parameter, device_ids=[]):
         """Get parameters from devices"""
         values = []
         IDs = []
@@ -90,6 +90,8 @@ class Connection(object):
             r = self.session.get(self.base_url + "/devices/" + "?projection=_id")
             r.raise_for_status()
             jsondata = r.json()
+            for device in jsondata:
+                IDs.append(device["_id"])
             for device_id in IDs:
                 quoted_id = requests.utils.quote("{\"_id\":\"" + device_id + "\"}", safe = '')
                 r = self.session.get(self.base_url + "/devices" + "?query=" + quoted_id + "&projection=" + parameter)
