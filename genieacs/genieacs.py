@@ -103,35 +103,49 @@ class Connection(object):
             parampath = param.split(".")
             path = None
             itemnr = 0
-            print(len(parampath))
             for item in parampath:
                 itemnr += 1
                 if path == None:
                     path = jsondata[0][item]
                 else:
-		            if itemnr < len(parampath):
-			            path = path[item]
-		            else:
-		                values.append(path[item]["_value"])
+                    if itemnr < len(parampath):
+                        path = path[item]
+                    else:
+                        values.append(path[item]["_value"])
 
-        for param in parameters:
-            IDs.append(jsondata[0]["_id"])
+        for param in jsondata:
+            IDs.append(param["_id"])
+
+#        idNr = 0
+#
+#        for param in parameters:
+#            parampath = param.split(".")
+#            lastpath = IDs[idNr]
+#            for path in parampath:
+#                datadict[lastpath][]
+
 
 
         #ID = jsondata[0][parampath[0]][parampath[1]][parampath[2]]["_id"]
-        print(IDs)
-        print(values)
 
 
-
-        print(data)
+        paths = []
 
         for param in parameters:
             parampath = param.split(".")
             for path in parampath:
-                data.append([path])
+                paths.append([path])
 
+        print("Paths:")
+        print(paths)
+        print("IDs:")
+        print(IDs)
+        print("Values:")
+        print(values)
 
+        data.append(IDs)
+        data.append(paths)
+        data.append(values)
 
 
 
