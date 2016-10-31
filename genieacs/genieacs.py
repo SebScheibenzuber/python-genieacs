@@ -11,7 +11,7 @@ class InvalidOperatorError(Exception):
     """Raised when an invalid operator has been entered"""
     def __init__ (self, operator):
         self.operator = operator
-        self.msg = ("InvalidOperatorError: Precondition has an invalid operator. Given: \"" + self.operator + "\" Expected: e, ne, lt, gt, lte, gte")
+        self.msg = ("InvalidOperatorError: Precondition has an invalid operator. Given: \"" + self.operator + "\" Expected: =, !=, <, >, <=, >=")
 
 class Parameter(object):
 
@@ -350,20 +350,32 @@ class Connection(object):
         try:
             data = str({"weight" : preset.weight, "precondition" : "{}", "configurations" : []})
             data = data.replace("\'", "\"")
+            if precondition.operator == "=":
+                operator = "e"
+            elif precondition.operator == "!=":
+                operator = "ne"
+            elif precondition.operator == "<":
+                operator = "lt"
+            elif precondition.operator == ">":
+                operator = "gt"
+            elif precondition.operator == "<=":
+                operator = "lte"
+            elif precondition.operator == ">=":
+                operator = "gte"
             for precondition in preset.preconditions:
                 if "{}" in data:
-                    if precondition.operator in ("", "e"):
+                    if operator == "e":
                         precons = ("{\"%(n)s\":\"%(v)s\"}" % {"n" : precondition.name,"v" : precondition.value})
                         precons = json.dumps(precons)
                         data = data.replace("\"{}\"", "%s" % precons)
-                    elif precondition.operator in ("ne", "lt", "gt", "lte", "gte"):
-                        precons = "{\"%(n)s\":{\"$%(o)s\":\"%(v)s\"}}" % {"n" : precondition.name,"o" : precondition.operator,"v" : precondition.value}
+                    elif operator in ("ne", "lt", "gt", "lte", "gte"):
+                        precons = "{\"%(n)s\":{\"$%(o)s\":\"%(v)s\"}}" % {"n" : precondition.name,"o" : operator,"v" : precondition.value}
                         precons = json.dumps(precons)
                         data = data.replace("\"{}\"", "%s" % precons)
                     else:
-                        raise InvalidOperatorError(precondition.operator)
+                        raise InvalidOperatorError(operator)
                 elif ", \\\"" not in data:
-                    if precondition.operator in ("", "e"):
+                    if operator == "e":
                         precons = (", \"%(n)s\":\"%(v)s\"}" % {"n" : precondition.name,"v" : precondition.value})
                         precons = json.dumps(precons)
                         precons = precons.replace("\",", ",")
@@ -372,8 +384,8 @@ class Connection(object):
                         elif "}}\", \"weight\"" in data:
                             precons = ("}" + precons)
                             data = data.replace("}}\", \"weight\"", "%s, \"weight\"" % precons)
-                    elif precondition.operator in ("ne", "lt", "gt", "lte", "gte"):
-                        precons = ", \"%(n)s\":{\"$%(o)s\":\"%(v)s\"}}" % {"n" : precondition.name,"o" : precondition.operator,"v" : precondition.value}
+                    elif operator in ("ne", "lt", "gt", "lte", "gte"):
+                        precons = ", \"%(n)s\":{\"$%(o)s\":\"%(v)s\"}}" % {"n" : precondition.name,"o" : operator,"v" : precondition.value}
                         precons = json.dumps(precons)
                         precons = precons.replace("\",", ",")
                         if "\"}\", \"weight\"" in data:
@@ -382,9 +394,9 @@ class Connection(object):
                             precons = ("}" + precons)
                             data = data.replace("}}\", \"weight\"", "%s, \"weight\"" % precons)
                     else:
-                        raise InvalidOperatorError(precondition.operator)
+                        raise InvalidOperatorError(operator)
                 else:
-                    if precondition.operator in ("", "e"):
+                    if operator == "e":
                         precons = (", \"%(n)s\":\"%(v)s\"}" % {"n" : precondition.name,"v" : precondition.value})
                         precons = json.dumps(precons)
                         precons = precons.replace("\",", ",")
@@ -393,8 +405,8 @@ class Connection(object):
                         elif "\"}}\", \"weight\"" in data:
                             precons = ("}" + precons)
                             data = data.replace("}}\", \"weight\"", "%s, \"weight\"" % precons)
-                    elif precondition.operator in ("ne", "lt", "gt", "lte", "gte"):
-                        precons = ", \"%(n)s\":{\"$%(o)s\":\"%(v)s\"}}" % {"n" : precondition.name,"o" : precondition.operator,"v" : precondition.value}
+                    elif operator in ("ne", "lt", "gt", "lte", "gte"):
+                        precons = ", \"%(n)s\":{\"$%(o)s\":\"%(v)s\"}}" % {"n" : precondition.name,"o" : operator,"v" : precondition.value}
                         precons = json.dumps(precons)
                         precons = precons.replace("\",", ",")
                         if "\"}\", \"weight\"" in data:
@@ -403,7 +415,7 @@ class Connection(object):
                             precons = ("}" + precons)
                             data = data.replace("}}\", \"weight\"", "%s, \"weight\"" % precons)
                     else:
-                        raise InvalidOperatorError(precondition.operator)
+                        raise InvalidOperatorError(operator)
             for configuration in preset.configurations:
                 if "}]" in data:
                     config = str(vars(configuration))
