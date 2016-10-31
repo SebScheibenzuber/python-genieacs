@@ -30,20 +30,8 @@ acs.task_retry("9h4769svl789kjf984ll")
 print(acs.task_get_all(device_id))
 # print data of devices
 print("\n")
-device_ids = [device_id, "000149-Kananga-P15"]
+device_ids = []
 print(acs.device_get_parameters(device_ids, "InternetGatewayDevice.X_TDT-DE_OpenwrtManagementServer.ConnectionRequestIp, InternetGatewayDevice.X_TDT-DE_OpenwrtManagementServer.ConnectionRequestInterface"))
-#print(acs.device_get_parameter())
-#print("\n")
-#print(acs.device_get_parameter(device_id))
-#print("\n")
-#print(acs.device_get_parameter(device_id, "_tags"))
-#print("\n")
-#print(acs.device_get_parameter(device_id, "summary.mac"))
-#print("\n")
-#print(acs.device_get_parameter(parameter = "_id"))
-#print("\n")
-#print(acs.device_get_parameter(parameter = "summary.ip"))
-#print("\n")
 
 # search a device by its ID and print all corresponding data
 print(acs.device_get_by_id(device_id))
