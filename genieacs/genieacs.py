@@ -87,24 +87,27 @@ class Connection(object):
         IDs = []
         parameters = parameter.split(", ")
         if not device_ids:
-            r = self.session.get(self.base_url + "/devices/?projection=" + parameter)
+            r = self.session.get(self.base_url + "/devices/" + "?projection=_id")
             r.raise_for_status()
             jsondata = r.json()
-            for param in parameters:
-                parampath = param.split(".")
-                path = None
-                itemnr = 0
-                for item in parampath:
-                    itemnr += 1
-                    if path == None:
-                        path = jsondata[0][item]
-                    else:
-                        if itemnr < len(parampath):
-                            path = path[item]
+            for device_id in IDs:
+                quoted_id = requests.utils.quote("{\"_id\":\"" + device_id + "\"}", safe = '')
+                r = self.session.get(self.base_url + "/devices" + "?query=" + quoted_id + "&projection=" + parameter)
+                r.raise_for_status()
+                jsondata = r.json()
+                for param in parameters:
+                    parampath = param.split(".")
+                    path = None
+                    itemnr = 0
+                    for item in parampath:
+                        itemnr += 1
+                        if path == None:
+                            path = jsondata[0][item]
                         else:
-                            values.append(path[item]["_value"])
-            for param in jsondata:
-                IDs.append(param["_id"])
+                            if itemnr < len(parampath):
+                                path = path[item]
+                            else:
+                                values.append(path[item]["_value"])
         else:
             for device_id in device_ids:
                 quoted_id = requests.utils.quote("{\"_id\":\"" + device_id + "\"}", safe = '')
@@ -124,8 +127,7 @@ class Connection(object):
                                 path = path[item]
                             else:
                                 values.append(path[item]["_value"])
-                for param in jsondata:
-                    IDs.append(param["_id"])
+                IDs = device_ids
         data = {k1: {} for k1 in IDs}
         for (k1, k2), v in zip(product(IDs, parameters), values):
             d = data[k1]
